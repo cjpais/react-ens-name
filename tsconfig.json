@@ -1,0 +1,25 @@
+{
+  "include": [
+      "src/*"
+  ],
+  "exclude": ["node_modules", "dist/"],
+  "compilerOptions": {
+      "target": "esnext",
+      "moduleResolution": "node",
+      "importHelpers": true,
+      "jsx": "react-jsx",
+      "allowSyntheticDefaultImports": true,
+      "outDir": "dist/",
+      "esModuleInterop": true,
+      "types": ["node"],
+      "declaration": true,
+      "strict": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      // "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "sourceMap": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+  },
+}
