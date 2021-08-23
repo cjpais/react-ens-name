@@ -4,7 +4,7 @@
   ],
   "exclude": ["node_modules", "dist/"],
   "compilerOptions": {
-      "target": "esnext",
+      "target": "es5",
       "moduleResolution": "node",
       "importHelpers": true,
       "jsx": "react-jsx",
