@@ -24,8 +24,13 @@ interface ENSNameProps {
   customDisplay?: (address: string | undefined) => string; // this overrides any paramater in displayType
 }
 
+type ENSStoreData = {
+  name: string;
+  lastUpdated: Date;
+};
+
 type ENSStoreState = {
-  addressBook: Record<string, string>;
+  addressBook: Record<string, ENSStoreData>;
 };
 
 const useENSStore = create<ENSStoreState>(
@@ -84,13 +89,16 @@ function formatAddress(args: ENSNameProps) {
 const useProviderLookup = (addr: string, provider: Provider) => {
   provider.lookupAddress(addr).then((name) => {
     useENSStore.setState((state) => ({
-      addressBook: { ...state.addressBook, [addr]: name },
+      addressBook: {
+        ...state.addressBook,
+        [addr]: { name, lastUpdated: new Date() },
+      },
     }));
   });
 };
 
 const useAPILookup = (addr: string) => {
-  var name = addr;
+  let name = addr;
 
   fetch(`https://ens.fafrd.workers.dev/ens/${addr}`)
     .then((v) => {
@@ -100,7 +108,17 @@ const useAPILookup = (addr: string) => {
       if (data.reverseRecord != null) {
         name = data.reverseRecord;
         useENSStore.setState((state) => ({
-          addressBook: { ...state.addressBook, [addr]: name },
+          addressBook: {
+            ...state.addressBook,
+            [addr]: { name, lastUpdated: new Date() },
+          },
+        }));
+      } else {
+        useENSStore.setState((state) => ({
+          addressBook: {
+            ...state.addressBook,
+            [addr]: { name: addr, lastUpdated: new Date() },
+          },
         }));
       }
     });
@@ -115,7 +133,11 @@ const useENSName = (args: ENSNameProps) => {
 
   useEffect(() => {
     if (!addr || !ensName) return;
-    if (ensName.toLowerCase() != addr) return;
+    if (ensName.name.toLowerCase() != addr) return;
+
+    // only attempt to update the names once a day
+    if (new Date() < new Date(ensName.lastUpdated.getTime() + 1 * 86400000))
+      return;
 
     if (args.provider) {
       useProviderLookup(addr, args.provider);
@@ -124,7 +146,7 @@ const useENSName = (args: ENSNameProps) => {
     }
   }, [ensName]);
 
-  return ensName?.toLowerCase() == addr ? formatAddress(args) : ensName;
+  return ensName?.name.toLowerCase() == addr ? formatAddress(args) : ensName;
 };
 
 export const ENSName = (props: ENSNameProps) => {
