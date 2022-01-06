@@ -109,13 +109,13 @@ const useProviderLookup = (addr: string, provider: Provider) => {
 const useAPILookup = (addr: string) => {
   let name = addr;
 
-  fetch(`https://ens.fafrd.workers.dev/ens/${addr}`)
+  fetch(`https://api.ensideas.com/ens/resolve/${addr}`)
     .then((v) => {
       return v.json();
     })
     .then((data) => {
-      if (data.reverseRecord != null) {
-        name = data.reverseRecord;
+      if (data.name != null) {
+        name = data.name;
         useENSStore.setState((state) => ({
           addressBook: {
             ...state.addressBook,
@@ -123,7 +123,6 @@ const useAPILookup = (addr: string) => {
           },
         }));
       } else {
-        console.log("storing blank state");
         useENSStore.setState((state) => ({
           addressBook: {
             ...state.addressBook,
