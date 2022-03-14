@@ -12,11 +12,11 @@ Note: No styling on the component is provided.
 
 Using npm:
 
-`npm install ethereum-ens-name`
+`npm install react-ens-name`
 
 Using yarn:
 
-`yarn add ethereum-ens-name`
+`yarn add react-ens-name`
 
 ## Usage
 
